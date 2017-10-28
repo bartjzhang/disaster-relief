@@ -1,5 +1,3 @@
-# DisasterRelief
-
-## HackTX 2017 project
+# DisasterRelief (HackTX 2017)
 
 Tool that helps first responders better visualize areas of disaster.
