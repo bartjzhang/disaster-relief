@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_pymongo import PyMongo
 from twitter import Twitter, OAuth, TwitterHTTPError, TwitterStream
 import json
@@ -21,7 +21,7 @@ t = Twitter(auth=oauth)
 
 @app.route('/')
 def index():
-    return 'Nothing yet, but working on it'
+    return render_template('index.html')
 
 @app.route('/api/v1/status', methods=['GET'])
 def get_status():
