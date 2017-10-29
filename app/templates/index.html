@@ -22,10 +22,14 @@
 			<button id ="secondButton" onclick="clickButtonVictim()" class="pt-touch-button"> I'm A Victim </button>
 			<input type="text" id="autocomplete" class="pt-touch-button" style="display: none;" onchange="initAutocomplete()" placeholder="Enter a Location"> </input>
 			<input type="text" id="disaster" class="pt-touch-button" style="display: none;" placeholder="Enter Your Disaster"> </input>
+			<input type="text" id="my_lat" style="display: none;" />
+			<input type="text" id="my_lng" style="display: none;" />
 			<button id="iterateEffects" class="pt-touch-button" style="display: none;"> Submit </button>
 			<button id="iterateEffects2" class="pt-touch-button" style="display: none;"> Submit </button>
+			<button id="goBack" class="pt-touch-button" onclick="window.location.href='/';">Go Back</button>
 			<div id="map" style="visibility: hidden;"></div>
-			<button id="centerLocation" style="display: none;" onclick="centerLoc()"> </button>
+			<button id="centerLocation" style="display: none;" onclick="centerLoc()"></button>
+
 
 		</div>
 
@@ -43,6 +47,7 @@
 		<script>
 		var coor=[0,0];
 		var map;
+		var loc;
 		function clickButtonResponder() {
 			document.getElementById("firstButton").style.display = 'none';
 			document.getElementById("secondButton").style.display = 'none';
@@ -56,20 +61,38 @@
 			document.getElementById("secondButton").style.display = 'none';
 			document.getElementById("disaster").style.display = 'block';
 			document.getElementById("iterateEffects2").style.display = '';
-
 		}
 		function sendLoc() {
-			if(navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(function(position) {
-		            var pos = {
-		              lat: position.coords.latitude,
-		              lng: position.coords.longitude
-		            };
-        		}, function() {
-           		handleLocationError(true, infoWindow, map.getCenter());
-	          	});
-	        }
+			 if (navigator.geolocation) {
+		        navigator.geolocation.getCurrentPosition(showPosition);
+		    } else { 
+		        console.log("Geolocation is not supported by this browser.");
+		    }
 		}
+
+		function showPosition(position) {
+		    var lat = position.coords.latitude; 
+		    var lng = position.coords.longitude;
+		    var text = document.getElementById("disaster").value;
+		    $.ajax({
+
+				url: 'http://127.0.0.1:5000/api/v1/alerts?latitude=' + lat + '&longitude=' + lng + '&text=' + text,
+				type: 'POST',
+				success: function(data) {
+
+					// do what you want here
+
+				},
+
+				error: function (err) {
+					console.log(err);
+				}
+
+			});
+
+			//window.location.href = "";
+		}
+
 		function centerLoc() {
 	        var input = document.getElementById('autocomplete');
 	        var geocoder = new google.maps.Geocoder();
@@ -86,6 +109,26 @@
 		}
 
 		function setMarker(place) {
+			lat = place.lat();
+			lng = place.lng();
+			text = document.getElementById("disaster").value;
+
+			$.ajax({
+
+				url: 'http://127.0.0.1:5000/api/v1/alerts?latitude=' + lat + '&longitude=' + lng + '&text=' + text,
+				type: 'GET',
+				success: function(data) {
+
+					// do what you want here
+
+				},
+
+				error: function (err) {
+					console.log(err);
+				}
+
+			});
+
 			var marker = new google.maps.Marker({
 	        position: place,
 	        map: map,
@@ -93,6 +136,7 @@
 		}
 
 		</script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8d43k0-viISNeYKDohqyZpl_OUi3dWlQ&libraries=places&callback=initialize" async defer></script>
 
 				<script type="text/javascript">

@@ -1,3 +1,4 @@
 Flask==0.10.1
 twitter
 flask-pymongo
+flask-cors

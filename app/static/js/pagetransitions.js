@@ -53,6 +53,7 @@ var PageTransitions = (function() {
 		} );
 
 		$iterate2.on( 'click', function() {
+
 			if( isAnimating ) {
 				return false;
 			}

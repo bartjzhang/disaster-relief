@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 from flask_pymongo import PyMongo
+from flask_cors import CORS, cross_origin
 from twitter import Twitter, OAuth, TwitterHTTPError, TwitterStream
 import json
 from math import sqrt
@@ -10,6 +11,7 @@ app.config['MONGO_DBNAME'] = 'alerts'
 app.config['MONGO_URI'] = 'mongodb://alerts_db:27017/alerts'
 
 mongo = PyMongo(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 ACCESS_TOKEN = '837610735932932096-sVr1Lu5BQWbqmQgLs9Zxn6UlZC4andz'
 ACCESS_SECRET = 'SX5ik6FgHe7QCsZ9ihqlmwF8ecCHPnNMFl9cz24W0tFvp'
@@ -28,6 +30,7 @@ def get_status():
 	return jsonify({'status': 'OK'})
 
 @app.route('/api/v1/alerts', methods=['GET'])
+@cross_origin()
 def get_alerts():
 		
 	# get request data
@@ -70,13 +73,14 @@ def get_alerts():
 	return jsonify({'alerts': all_alerts, 'tweets': tweets['statuses']})
 
 @app.route('/api/v1/alerts', methods=['POST'])
+@cross_origin()
 def post_alerts():
 
 	# post alerts to database
 	alerts = mongo.db.alerts
-	latitude = request.json['latitude']
-	longitude = request.json['longitude']
-	text = request.json['text']
+	latitude = request.args['latitude']
+	longitude = request.args['longitude']
+	text = request.args['text']
 
 	if latitude == '' or longitude == '':
 		return jsonify({"status": "FAIL"})
