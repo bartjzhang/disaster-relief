@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>Disaster Relief</title>
+		<meta name="description" content="Disaster Relief" />
+		<meta name="keywords" content="page transition, css animation, website, effect, css3, jquery" />
+		<meta name="author" content="Codrops" />
+		<link rel="shortcut icon" href="../favicon.ico"> 
+		<link rel="stylesheet" type="text/css" href="css/default.css" />
+		<link rel="stylesheet" type="text/css" href="css/multilevelmenu.css" />
+		<link rel="stylesheet" type="text/css" href="css/component.css" />
+		<link rel="stylesheet" type="text/css" href="css/animations.css" />
+		<script src="js/modernizr.custom.js"></script>
+	</head>
+	<body>	
+		<div class="pt-triggers">
+			<button id="sendLoc" class="pt-touch-button" style="display: none;" onclick="sendLoc()"> Sending Your Location </button>
+			<button id ="firstButton" onclick="clickButtonResponder()" class="pt-touch-button"> I'm A Responder </button>
+			<button id ="secondButton" onclick="clickButtonVictim()" class="pt-touch-button"> I'm A Victim </button>
+			<input type="text" id="autocomplete" class="pt-touch-button" style="display: none;" onchange="initAutocomplete()" placeholder="Enter a Location"> </input>
+			<input type="text" id="disaster" class="pt-touch-button" style="display: none;" placeholder="Enter Your Disaster"> </input>
+			<button id="iterateEffects" class="pt-touch-button" style="display: none;"> Submit </button>
+			<button id="iterateEffects2" class="pt-touch-button" style="display: none;"> Submit </button>
+			<div id="map" style="visibility: hidden;"></div>
+			<button id="centerLocation" style="display: none;" onclick="centerLoc()"> </button>
+
+		</div>
+
+		<div id="pt-main" class="pt-perspective">
+			<div class="pt-page pt-page-1"><h1><strong>Disaster</strong> Relief</h1></div>
+		</div>
+
+		<div class="pt-message">
+			<p>Your browser does not support CSS animations.</p>
+		</div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="js/jquery.dlmenu.js"></script>
+		<script src="js/pagetransitions.js"></script>
+		<script>
+		var coor=[0,0];
+		var map;
+		function clickButtonResponder() {
+			document.getElementById("firstButton").style.display = 'none';
+			document.getElementById("secondButton").style.display = 'none';
+			document.getElementById("autocomplete").style.display = 'block';
+			document.getElementById("disaster").style.display = 'block';
+			document.getElementById("iterateEffects").style.display = '';
+
+		}
+		function clickButtonVictim() {
+			document.getElementById("firstButton").style.display = 'none';
+			document.getElementById("secondButton").style.display = 'none';
+			document.getElementById("disaster").style.display = 'block';
+			document.getElementById("iterateEffects2").style.display = '';
+
+		}
+		function sendLoc() {
+			if(navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position) {
+		            var pos = {
+		              lat: position.coords.latitude,
+		              lng: position.coords.longitude
+		            };
+        		}, function() {
+           		handleLocationError(true, infoWindow, map.getCenter());
+	          	});
+	        }
+		}
+		function centerLoc() {
+	        var input = document.getElementById('autocomplete');
+	        var geocoder = new google.maps.Geocoder();
+		  	geocoder.geocode({'address': input.value}, function(results, status) {
+		  	var place = results[0].geometry.location;
+		    if (status === 'OK') {
+		      map.setCenter(place);
+		    } else {
+		      alert('Geocode was not successful for the following reason: ' + status);
+		    }
+			  setMarker(place);
+		  });
+		  map.setZoom(7);
+		}
+
+		function setMarker(place) {
+			var marker = new google.maps.Marker({
+	        position: place,
+	        map: map,
+			});
+		}
+
+		</script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8d43k0-viISNeYKDohqyZpl_OUi3dWlQ&libraries=places&callback=initialize" async defer></script>
+
+				<script type="text/javascript">
+				function initialize() {
+				   initAutocomplete();
+				   initMap();
+				}
+		  function initAutocomplete() {
+		    // Create the autocomplete object, restricting the search to geographical
+		    // location types.
+		    autocomplete = new google.maps.places.Autocomplete(
+		        /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+		        {types: ['geocode']});
+
+		    // When the user selects an address from the dropdown, populate the address
+		    // fields in the form.
+		    // autocomplete.addListener('place_changed', fillInAddress()	);
+		  }
+
+		  // function fillInAddress() {
+		  //   // Get the place details from the autocomplete object.
+		  //   var place = autocomplete.getPlace();
+		  //   // console.log(place.location());
+		  //   if( place == null){
+		  //   	console.log("you fucked up");
+		  //   }
+		  // }
+
+		  function geolocate() {
+		    if (navigator.geolocation) {
+		      navigator.geolocation.getCurrentPosition(function(position) {
+		        var geolocation = {
+		          lat: position.coords.latitude,
+		          lng: position.coords.longitude
+		        };
+		        var circle = new google.maps.Circle({
+		          center: geolocation,
+		          radius: position.coords.accuracy
+		        });
+		        autocomplete.setBounds(circle.getBounds());
+		      });
+		      coor[0] = geolocation['lat'];
+		      coor[1] = geolocation['lng'];
+		    }
+		  }
+
+	      function initMap() {
+	        var uluru = {lat: -coor[0], lng: coor[1]};
+	        map = new google.maps.Map(document.getElementById('map'), {
+	          zoom: 4,
+	          center: uluru
+	        });
+	      }
+	    </script>
+	</body>
+</html>
