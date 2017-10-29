@@ -29,14 +29,6 @@
 			<button id="iterateEffects2" class="pt-touch-button" style="display: none;"> Submit </button>
 			<button id="goBack" class="pt-touch-button" onclick="window.location.href='/';">Go Back</button>
 			<div id="map" style="visibility: hidden;"></div>
-			<div id="responder_info" style="display: none;">
-				<div id="tweets">
-					<h1>TWEETS IN AREA</h1>
-				</div>
-				<div id="alerts">
-					<h1>ALERTS IN AREA</h1>
-				</div>
-			</div>
 			<button id="centerLocation" style="display: none;" onclick="centerLoc()"></button>
 
 
@@ -124,6 +116,8 @@
 			lng = place.lng();
 			text = document.getElementById("disaster").value;
 
+			var tweet_info;
+			var alert_info;
 			$.ajax({
 
 				url: 'http://127.0.0.1:5000/api/v1/alerts?latitude=' + lat + '&longitude=' + lng + '&text=' + text,
@@ -133,20 +127,26 @@
 					// do what you want here
 					var tweet_info = data['tweets'];
 					var alert_info = data['alerts'];
-					console.log(tweet_info);
-					console.log(alert_info);
 
-					for (var key in tweet_info) {
-						var tweets = document.getElementById("tweets");
-						tweets.innerHTML += tweet_info[key]['text'];
-					}
-
-					for (var key in alert_info) {
-						var alerts = document.getElementById("alerts");
-						alerts.innerHTML += alert_info[key]['text'];
-					}
-
-					document.getElementById("responder_info").style.display = "";
+					var marker = new google.maps.Marker({
+			        position: place,
+			        map: map,
+					});
+					var numPeople = tweet_info.length + alert_info.length;
+					var contentString = '<div id="content">'+
+		      		'<div id="siteNotice">'+ '</div>' + 
+		      		'<div id="bodyContent">' +
+		      		'<p> <font color="black"> ' + numPeople + ' people affected in the area.</font> </p>' +
+		      		'</div>' +
+		      		'</div';
+					var result = contentString.fontcolor("black");
+					// var contentString = "Hello World!";
+					var infowindow = new google.maps.InfoWindow({
+		    		content: contentString
+		  			});
+					marker.addListener('click', function() {
+						infowindow.open(marker.get('map'), marker);
+					});
 
 				},
 
@@ -156,14 +156,6 @@
 
 			});
 
-			var marker = new google.maps.Marker({
-	        position: place,
-	        map: map,
-			});
-
-			marker.addListener('click', function() {
-				infowindow.open(marker.get('map'), marker);
-			});
 		}
 
 		</script>
