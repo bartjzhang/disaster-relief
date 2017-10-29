@@ -80,14 +80,18 @@
 		    } else {
 		      alert('Geocode was not successful for the following reason: ' + status);
 		    }
-			  var marker = new google.maps.Marker({
-	          position: place,
-	          map: map,
-	          title: 'My Marker!'
-	        });
+			  setMarker(place);
 		  });
 		  map.setZoom(7);
 		}
+
+		function setMarker(place) {
+			var marker = new google.maps.Marker({
+	        position: place,
+	        map: map,
+			});
+		}
+
 		</script>
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8d43k0-viISNeYKDohqyZpl_OUi3dWlQ&libraries=places&callback=initialize" async defer></script>
 
