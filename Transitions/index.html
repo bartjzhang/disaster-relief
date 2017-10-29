@@ -16,15 +16,15 @@
 		<script src="js/modernizr.custom.js"></script>
 	</head>
 	<body>	
-		<div class="codrops-top clearfix">
-			<a class="codrops-icon codrops-icon-prev" href="http://tympanus.net/Tutorials/AutomaticFigureNumbering/"><span>Previous Demo</span></a>
-			<span class="right"><a class="codrops-icon codrops-icon-drop" href="http://tympanus.net/codrops/?p=15001"><span>Back to the Codrops Article</span></a></span>
-		</div>
-
 		<div class="pt-triggers">
-			<input type="text" id="" class="pt-touch-button"> </input>
-			<button id="iterateEffects" class="pt-touch-button"> Submit </button>
-			<div id="dl-menu" class="dl-menuwrapper">
+			<button id ="firstButton" onclick="clickButton()" class="pt-touch-button"> I'm A Responder </button>
+			<button id ="secondButton" onclick="clickButton()" class="pt-touch-button"> I'm A Volunteer </button>
+		<div>
+			<input type="text" id="autocomplete" class="pt-touch-button" style="display: none;" onchange="initAutocomplete()" placeholder="Enter a Location"> </input>
+		</div>
+			<button id="iterateEffects" class="pt-touch-button" style="display: none;" onclick="clickButton()"> Submit </button>
+		<div id="map" style="visibility: hidden;"></div>
+			<!-- <div id="dl-menu" class="dl-menuwrapper">
 				<button class="dl-trigger">Choose a transition</button>
 				<ul class="dl-menu">
 					<li>
@@ -157,15 +157,10 @@
 					<li data-animation="67"><a href="#">Slide</a></li>
 				</ul>
 			</div><!-- /dl-menu-wrapper-->
-		</div><!-- /triggers -->
+		</div>
 
 		<div id="pt-main" class="pt-perspective">
-			<div class="pt-page pt-page-1"><h1><span>A collection of</span><strong>Page</strong> Transitions</h1></div>
-			<div class="pt-page pt-page-2"><h1><span>A collection of</span><strong>Page</strong> Transitions</h1></div>
-			<div class="pt-page pt-page-3"><h1><span>A collection of</span><strong>Page</strong> Transitions</h1></div>
-			<div class="pt-page pt-page-4"><h1><span>A collection of</span><strong>Page</strong> Transitions</h1></div>
-			<div class="pt-page pt-page-5"><h1><span>A collection of</span><strong>Page</strong> Transitions</h1></div>
-			<div class="pt-page pt-page-6"><h1><span>A collection of</span><strong>Page</strong> Transitions</h1></div>
+			<div class="pt-page pt-page-1"><h1><strong>Disaster</strong> Relief</h1></div>
 		</div>
 
 		<div class="pt-message">
@@ -175,5 +170,74 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="js/jquery.dlmenu.js"></script>
 		<script src="js/pagetransitions.js"></script>
+		<script>
+		var coor=[0,0];
+		function clickButton() {
+			document.getElementById("firstButton").style.display = 'none';
+			document.getElementById("secondButton").style.display = 'none';
+			document.getElementById("autocomplete").style.display = 'block';
+			document.getElementById("iterateEffects").style.display = '';
+
+		}
+		</script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8d43k0-viISNeYKDohqyZpl_OUi3dWlQ&libraries=places&callback=initialize" async defer></script>
+
+				<script type="text/javascript">
+				function initialize() {
+				   initAutocomplete();
+				   initMap();
+				}
+		  function initAutocomplete() {
+		    // Create the autocomplete object, restricting the search to geographical
+		    // location types.
+		    autocomplete = new google.maps.places.Autocomplete(
+		        /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+		        {types: ['geocode']});
+
+		    // When the user selects an address from the dropdown, populate the address
+		    // fields in the form.
+		    autocomplete.addListener('place_changed', fillInAddress);
+		  }
+
+		  function fillInAddress() {
+		    // Get the place details from the autocomplete object.
+		    var place = autocomplete.getPlace();
+		    // get lat
+		    var lat = place.geometry.location.lat();
+		    // get lng
+		    var lng = place.geometry.location.lng();
+		    alert(lng);
+		  }
+
+		  function geolocate() {
+		    if (navigator.geolocation) {
+		      navigator.geolocation.getCurrentPosition(function(position) {
+		        var geolocation = {
+		          lat: position.coords.latitude,
+		          lng: position.coords.longitude
+		        };
+		        var circle = new google.maps.Circle({
+		          center: geolocation,
+		          radius: position.coords.accuracy
+		        });
+		        autocomplete.setBounds(circle.getBounds());
+		      });
+		      coor[0] = geolocation['lat'];
+		      coor[1] = geolocation['lng'];
+		    }
+		  }
+
+	      function initMap() {
+	        var uluru = {lat: -coor[0], lng: coor[1]};
+	        var map = new google.maps.Map(document.getElementById('map'), {
+	          zoom: 4,
+	          center: uluru
+	        });
+	        var marker = new google.maps.Marker({
+	          position: uluru,
+	          map: map
+	        });
+	      }
+	    </script>
 	</body>
 </html>

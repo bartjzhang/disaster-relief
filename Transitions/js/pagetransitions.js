@@ -3,6 +3,7 @@ var PageTransitions = (function() {
 	var $main = $( '#pt-main' ),
 		$pages = $main.children( 'div.pt-page' ),
 		$iterate = $( '#iterateEffects' ),
+		$button = $( 'div.pt-touch-button'),
 		animcursor = 1,
 		pagesCount = $pages.length,
 		current = 0,
@@ -46,6 +47,7 @@ var PageTransitions = (function() {
 			}
 			nextPage( animcursor );
 			++animcursor;
+			// button.style.visibility = false;
 		} );
 
 	}
@@ -80,7 +82,7 @@ var PageTransitions = (function() {
 
 		var $nextPage = $pages.eq( current ).addClass( 'pt-page-current' ),
 			outClass = '', inClass = '';
-
+		animation = 5;
 		switch( animation ) {
 
 			case 1:
@@ -355,14 +357,22 @@ var PageTransitions = (function() {
 		}
 
 		$currPage.addClass( outClass ).on( animEndEventName, function() {
+
 			$currPage.off( animEndEventName );
 			endCurrPage = true;
 			if( endNextPage ) {
 				onEndAnimation( $currPage, $nextPage );
 			}
-		} );
+		} )
 
 		$nextPage.addClass( inClass ).on( animEndEventName, function() {
+			$('#autocomplete').fadeOut("fast");
+			$('#iterateEffects').fadeOut("fast");
+			document.getElementById("map").style.visibility = '';
+
+			//document.getElementById("autocomplete").style.display = 'none';
+			//document.getElementById("iterateEffects").style.display = 'none';
+
 			$nextPage.off( animEndEventName );
 			endNextPage = true;
 			if( endCurrPage ) {

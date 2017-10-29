@@ -1,5 +1,11 @@
 html, body { height: 100%; }
 
+
+#map {
+height: 500px;
+width: 700px;
+}
+
 .pt-perspective {
 	position: relative;
 	width: 100%;
@@ -141,6 +147,11 @@ html, body { height: 100%; }
 }
 
 .pt-touch-button {
+	background: #fff;
+	color: #aaa;
+}
+
+#my-button {
 	background: #fff;
 	color: #aaa;
 }
