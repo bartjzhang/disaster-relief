@@ -1,8 +1,10 @@
 var PageTransitions = (function() {
+	var bool;
 
 	var $main = $( '#pt-main' ),
 		$pages = $main.children( 'div.pt-page' ),
 		$iterate = $( '#iterateEffects' ),
+		$iterate2 = $( '#iterateEffects2' ),
 		$button = $( 'div.pt-touch-button'),
 		animcursor = 1,
 		pagesCount = $pages.length,
@@ -46,8 +48,20 @@ var PageTransitions = (function() {
 				animcursor = 1;
 			}
 			nextPage( animcursor );
+			bool = 0;
 			++animcursor;
-			// button.style.visibility = false;
+		} );
+
+		$iterate2.on( 'click', function() {
+			if( isAnimating ) {
+				return false;
+			}
+			if( animcursor > 67 ) {
+				animcursor = 1;
+			}
+			nextPage( animcursor );
+			bool = 1;
+			++animcursor;
 		} );
 
 	}
@@ -368,7 +382,16 @@ var PageTransitions = (function() {
 		$nextPage.addClass( inClass ).on( animEndEventName, function() {
 			$('#autocomplete').fadeOut("fast");
 			$('#iterateEffects').fadeOut("fast");
-			document.getElementById("map").style.visibility = '';
+			$('#iterateEffects2').fadeOut("fast");	
+			$('#disaster').fadeOut("fast");
+			if(bool == 0){
+				document.getElementById("map").style.visibility = '';
+				$('#centerLocation').click();
+			}
+			else{
+				$('#sendLoc').fadeIn("fast");
+				$('#sendLoc').click();
+			}
 
 			//document.getElementById("autocomplete").style.display = 'none';
 			//document.getElementById("iterateEffects").style.display = 'none';

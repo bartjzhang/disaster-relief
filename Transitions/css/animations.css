@@ -1,6 +1,9 @@
 /* animation sets */
 
 /* move from / to  */
+.pac-container {
+	z-index: 99999999;
+}
 
 .pt-page-moveToLeft {
 	-webkit-animation: moveToLeft .6s ease both;
