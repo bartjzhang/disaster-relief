@@ -18,6 +18,7 @@
 	<body>	
 		<div class="pt-triggers">
 			<button id="sendLoc" class="pt-touch-button" style="display: none;" onclick="sendLoc()"> Sending Your Location </button>
+			<h1 id="alertMsg" style="display: none;">You're alert has been sent!</h1>
 			<button id ="firstButton" onclick="clickButtonResponder()" class="pt-touch-button"> I'm A Responder </button>
 			<button id ="secondButton" onclick="clickButtonVictim()" class="pt-touch-button"> I'm A Victim </button>
 			<input type="text" id="autocomplete" class="pt-touch-button" style="display: none;" onchange="initAutocomplete()" placeholder="Enter a Location"> </input>
@@ -28,6 +29,14 @@
 			<button id="iterateEffects2" class="pt-touch-button" style="display: none;"> Submit </button>
 			<button id="goBack" class="pt-touch-button" onclick="window.location.href='/';">Go Back</button>
 			<div id="map" style="visibility: hidden;"></div>
+			<div id="responder_info" style="display: none;">
+				<div id="tweets">
+					<h1>TWEETS IN AREA</h1>
+				</div>
+				<div id="alerts">
+					<h1>ALERTS IN AREA</h1>
+				</div>
+			</div>
 			<button id="centerLocation" style="display: none;" onclick="centerLoc()"></button>
 
 
@@ -44,6 +53,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="../static/js/jquery.dlmenu.js"></script>
 		<script src="../static/js/pagetransitions.js"></script>
+		<script src="../static/js/cities.js"></script>
 		<script>
 		var coor=[0,0];
 		var map;
@@ -81,7 +91,8 @@
 				success: function(data) {
 
 					// do what you want here
-
+					document.getElementById("sendLoc").style.display = "none";
+					document.getElementById("alertMsg").style.display = "";
 				},
 
 				error: function (err) {
@@ -120,6 +131,22 @@
 				success: function(data) {
 
 					// do what you want here
+					var tweet_info = data['tweets'];
+					var alert_info = data['alerts'];
+					console.log(tweet_info);
+					console.log(alert_info);
+
+					for (var key in tweet_info) {
+						var tweets = document.getElementById("tweets");
+						tweets.innerHTML += tweet_info[key]['text'];
+					}
+
+					for (var key in alert_info) {
+						var alerts = document.getElementById("alerts");
+						alerts.innerHTML += alert_info[key]['text'];
+					}
+
+					document.getElementById("responder_info").style.display = "";
 
 				},
 
@@ -132,6 +159,10 @@
 			var marker = new google.maps.Marker({
 	        position: place,
 	        map: map,
+			});
+
+			marker.addListener('click', function() {
+				infowindow.open(marker.get('map'), marker);
 			});
 		}
 
